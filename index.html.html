@@ -1,10 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Adv System — Login</title>
-
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -15,7 +15,9 @@
       min-height: 100vh;
     }
 
-    /* LOGIN */
+    /* ══════════════════════════════
+       TELA DE LOGIN
+    ══════════════════════════════ */
     #login-screen {
       min-height: 100vh;
       display: flex;
@@ -30,166 +32,467 @@
       border-radius: 16px;
       padding: 40px;
       width: 400px;
+      box-shadow: 0 24px 80px rgba(0,0,0,.6);
     }
 
-    .form-group { margin-bottom: 18px; }
+    .login-logo {
+      text-align: center;
+      margin-bottom: 32px;
+    }
 
+    .login-logo .icon-wrap {
+      width: 60px; height: 60px;
+      background: linear-gradient(135deg, #0a1f44, #1a4fc4);
+      border-radius: 14px;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 28px;
+      margin-bottom: 14px;
+    }
+
+    .login-logo h1 { font-size: 22px; font-weight: 700; }
+    .login-logo p  { font-size: 13px; color: #555; margin-top: 4px; }
+
+    .form-group { margin-bottom: 18px; }
     .form-group label {
-      display:block;
-      font-size:12px;
-      color:#777;
-      margin-bottom:6px;
+      display: block;
+      font-size: 12px;
+      color: #777;
+      margin-bottom: 6px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .4px;
     }
 
     .form-group input {
-      width:100%;
-      padding:12px;
-      background:#111;
-      border:1px solid #2a2a2a;
-      color:#fff;
-      border-radius:8px;
+      width: 100%;
+      background: #111;
+      border: 1px solid #2a2a2a;
+      color: white;
+      padding: 12px 14px;
+      border-radius: 8px;
+      font-size: 14px;
+      outline: none;
+      transition: border-color .2s;
     }
+
+    .form-group input:focus { border-color: #4a7fff; }
 
     .btn-login {
-      width:100%;
-      padding:12px;
-      background:#1a4fc4;
-      color:#fff;
-      border:none;
-      border-radius:8px;
-      cursor:pointer;
-      font-weight:700;
+      width: 100%;
+      background: linear-gradient(135deg, #1a4fc4, #4a7fff);
+      color: white;
+      border: none;
+      padding: 13px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 700;
+      margin-top: 8px;
+      transition: opacity .2s;
+      letter-spacing: .3px;
     }
+
+    .btn-login:hover { opacity: .85; }
+    .btn-login:disabled { opacity: .5; cursor: not-allowed; }
 
     .login-error {
-      display:none;
-      margin-top:10px;
-      color:#ff6b6b;
+      background: rgba(239,68,68,.12);
+      border: 1px solid rgba(239,68,68,.3);
+      color: #f87171;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      margin-top: 16px;
+      display: none;
     }
 
-    /* APP */
-    #app-screen { display:none; }
+    .login-footer {
+      text-align: center;
+      margin-top: 24px;
+      font-size: 12px;
+      color: #444;
+    }
 
+    /* ══════════════════════════════
+       APP (oculto até login)
+    ══════════════════════════════ */
+    #app-screen { display: none; }
+
+    /* ── SIDEBAR ── */
     .sidebar {
-      width:230px;
-      min-height:100vh;
-      background:#0a1f44;
-      position:fixed;
-      padding:20px;
-      color:#fff;
+      width: 230px;
+      min-height: 100vh;
+      background: linear-gradient(180deg, #0a1f44 0%, #071330 100%);
+      position: fixed;
+      display: flex;
+      flex-direction: column;
+      padding: 28px 20px;
+      border-right: 1px solid #1e3a6e;
+      z-index: 100;
     }
 
-    .main {
-      margin-left:230px;
-      padding:20px;
+    .sidebar .logo { display: flex; align-items: center; gap: 10px; margin-bottom: 40px; }
+    .sidebar .logo-icon {
+      width: 36px; height: 36px;
+      background: #1a4fc4;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
     }
 
-    table {
-      width:100%;
-      border-collapse:collapse;
+    .nav-group { margin-bottom: 28px; }
+    .nav-label { font-size: 10px; font-weight: 700; color: #3d5a8a; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; padding-left: 8px; }
+
+    .sidebar a {
+      display: flex; align-items: center; gap: 10px;
+      color: #8aa8d4; text-decoration: none;
+      padding: 9px 12px; border-radius: 8px;
+      font-size: 14px; margin-bottom: 2px;
+      transition: all .2s;
+    }
+    .sidebar a:hover, .sidebar a.active {
+      background: rgba(26,79,196,.25); color: #fff;
+    }
+    .sidebar a.active { border-left: 3px solid #4a7fff; }
+
+    .user-pill {
+      margin-top: auto;
+      background: rgba(255,255,255,.05);
+      border: 1px solid #1e3a6e;
+      border-radius: 10px;
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
-    td,th {
-      padding:10px;
-      border-bottom:1px solid #222;
+    .user-avatar {
+      width: 34px; height: 34px;
+      background: linear-gradient(135deg, #1a4fc4, #4a7fff);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 13px;
+      flex-shrink: 0;
     }
+
+    .user-info { flex: 1; min-width: 0; }
+    .user-name  { font-size: 12px; font-weight: 600; color: #ccc; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .user-role  { font-size: 10px; color: #4a7fff; margin-top: 2px; }
+
+    .btn-logout {
+      background: none; border: none; color: #555;
+      cursor: pointer; font-size: 16px; padding: 2px;
+      transition: color .2s;
+    }
+    .btn-logout:hover { color: #ef4444; }
+
+    /* ── MAIN ── */
+    .main { margin-left: 230px; flex: 1; padding: 32px; }
+
+    .topbar {
+      display: flex; align-items: center;
+      justify-content: space-between; margin-bottom: 32px;
+    }
+    .topbar h1 { font-size: 22px; font-weight: 700; }
+    .topbar .date { font-size: 13px; color: #555; }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #1a4fc4, #4a7fff);
+      color: white; border: none;
+      padding: 10px 20px; border-radius: 8px;
+      cursor: pointer; font-size: 14px; font-weight: 600;
+      display: flex; align-items: center; gap: 8px;
+      transition: opacity .2s;
+    }
+    .btn-primary:hover { opacity: .85; }
+
+    /* ── CARDS ── */
+    .cards { display: grid; grid-template-columns: repeat(5,1fr); gap: 16px; margin-bottom: 32px; }
+
+    .card {
+      background: #161616; border: 1px solid #222;
+      padding: 20px; border-radius: 12px;
+      position: relative; overflow: hidden;
+      transition: transform .2s, border-color .2s;
+    }
+    .card:hover { transform: translateY(-2px); border-color: #333; }
+    .card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; }
+
+    .card.total::before   { background:#4a7fff; }
+    .card.pendente::before { background:#f59e0b; }
+    .card.andamento::before { background:#3b82f6; }
+    .card.revisao::before  { background:#a855f7; }
+    .card.concluido::before { background:#22c55e; }
+
+    .card h3 { font-size:12px; color:#666; font-weight:500; margin-bottom:10px; text-transform:uppercase; letter-spacing:.5px; }
+    .card p  { font-size:32px; font-weight:700; color:#fff; }
+    .card .trend { font-size:11px; color:#555; margin-top:6px; }
+
+    /* ── TABLE ── */
+    .section { background:#161616; border:1px solid #222; border-radius:12px; overflow:hidden; }
+
+    .section-header {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:18px 24px; border-bottom:1px solid #222; flex-wrap: wrap; gap: 12px;
+    }
+    .section-header h2 { font-size:15px; font-weight:600; }
+
+    .filter-bar { display:flex; gap:8px; flex-wrap:wrap; }
+    .filter-btn {
+      background:#222; border:1px solid #333; color:#aaa;
+      padding:6px 14px; border-radius:6px; cursor:pointer;
+      font-size:12px; transition:all .2s;
+    }
+    .filter-btn:hover, .filter-btn.active { background:#1a4fc4; border-color:#1a4fc4; color:white; }
+
+    .search-box {
+      background:#1e1e1e; border:1px solid #333; color:white;
+      padding:6px 12px; border-radius:6px; font-size:13px;
+      outline:none; width:200px;
+    }
+    .search-box:focus { border-color:#1a4fc4; }
+
+    table { width:100%; border-collapse:collapse; }
+    thead tr { background:#111; }
+    thead th { padding:12px 20px; font-size:11px; color:#555; text-transform:uppercase; letter-spacing:.5px; text-align:left; font-weight:600; }
+    tbody tr { border-bottom:1px solid #1c1c1c; transition:background .15s; }
+    tbody tr:hover { background:#1a1a1a; }
+    tbody tr:last-child { border-bottom:none; }
+    tbody td { padding:14px 20px; font-size:14px; }
+
+    .badge { display:inline-block; padding:3px 10px; border-radius:20px; font-size:11px; font-weight:600; }
+    .badge-pendente  { background:rgba(245,158,11,.15); color:#f59e0b; }
+    .badge-andamento { background:rgba(59,130,246,.15);  color:#60a5fa; }
+    .badge-revisao   { background:rgba(168,85,247,.15);  color:#c084fc; }
+    .badge-concluido { background:rgba(34,197,94,.15);   color:#4ade80; }
+
+    .empty-state { text-align:center; padding:60px 20px; color:#444; }
+    .empty-state .icon { font-size:48px; margin-bottom:12px; }
+
+    /* ── MODAL ── */
+    .modal-overlay {
+      display:none; position:fixed; inset:0;
+      background:rgba(0,0,0,.7); z-index:200;
+      align-items:center; justify-content:center;
+      backdrop-filter:blur(4px);
+    }
+    .modal-overlay.show { display:flex; }
+
+    .modal {
+      background:#1a1a1a; border:1px solid #2a2a2a;
+      border-radius:14px; width:460px; padding:28px;
+      animation: slideUp .25s ease;
+    }
+    @keyframes slideUp { from { transform:translateY(20px); opacity:0; } to { transform:translateY(0); opacity:1; } }
+
+    .modal h3 { font-size:18px; font-weight:700; margin-bottom:24px; }
+
+    .modal .form-group label { text-transform: none; letter-spacing: 0; color: #888; }
+    .modal .form-group input,
+    .modal .form-group select,
+    .modal .form-group textarea {
+      width:100%; background:#111; border:1px solid #333;
+      color:white; padding:10px 14px; border-radius:8px;
+      font-size:14px; outline:none; transition:border-color .2s;
+    }
+    .modal .form-group input:focus,
+    .modal .form-group select:focus,
+    .modal .form-group textarea:focus { border-color:#4a7fff; }
+    .modal .form-group select option { background:#1a1a1a; }
+    .modal .form-group textarea { resize:vertical; min-height:80px; }
+
+    .modal-actions { display:flex; gap:12px; justify-content:flex-end; margin-top:8px; }
+
+    .btn-secondary {
+      background:transparent; border:1px solid #333; color:#aaa;
+      padding:10px 20px; border-radius:8px; cursor:pointer;
+      font-size:14px; transition:all .2s;
+    }
+    .btn-secondary:hover { background:#222; color:white; }
+
+    /* ── SPINNER ── */
+    .spinner { display:inline-block; width:14px; height:14px; border:2px solid #333; border-top-color:#4a7fff; border-radius:50%; animation:spin .7s linear infinite; margin-right:6px; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+
+    /* ── TOAST ── */
+    #toast {
+      position:fixed; bottom:30px; right:30px;
+      background:#22c55e; color:white;
+      padding:12px 20px; border-radius:8px;
+      font-size:14px; font-weight:600;
+      transform:translateY(80px); opacity:0;
+      transition:all .3s; z-index:999;
+    }
+    #toast.show { transform:translateY(0); opacity:1; }
+    #toast.error { background:#ef4444; }
   </style>
 </head>
-
 <body>
 
-<!-- LOGIN -->
+<!-- ══════════ TELA DE LOGIN ══════════ -->
 <div id="login-screen">
   <div class="login-box">
-    <h2>Login</h2>
+    <div class="login-logo">
+      <div class="icon-wrap">⚖️</div>
+      <h1>Adv System</h1>
+      <p>Gestão Jurídica — Acesso Seguro</p>
+    </div>
 
     <div class="form-group">
-      <label>Email</label>
-      <input id="l-email" type="email">
+      <label>E-mail</label>
+      <input id="l-email" type="email" placeholder="seu@email.com.br" autocomplete="email">
     </div>
 
     <div class="form-group">
       <label>Senha</label>
-      <input id="l-senha" type="password">
+      <input id="l-senha" type="password" placeholder="••••••••" autocomplete="current-password">
     </div>
 
-    <button class="btn-login" onclick="fazerLogin()" id="btn-entrar">
-      Entrar
-    </button>
+    <button class="btn-login" id="btn-entrar" onclick="fazerLogin()">Entrar</button>
 
     <div class="login-error" id="login-error"></div>
+
+    <div class="login-footer">
+      🔒 Acesso restrito a usuários autorizados
+    </div>
   </div>
 </div>
 
-<!-- APP -->
+<!-- ══════════ APP ══════════ -->
 <div id="app-screen">
-
   <div class="sidebar">
-    <h3>Adv System</h3>
-    <p id="user-display-name"></p>
-    <button onclick="fazerLogout()">Sair</button>
+    <div class="logo">
+      <div class="logo-icon">⚖️</div>
+      <div>
+        <div style="font-size:15px;font-weight:700;color:#fff">Adv System</div>
+        <div style="font-size:11px;color:#5a7db5">Gestão Jurídica</div>
+      </div>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-label">Principal</div>
+      <a href="#" class="active"><span>📊</span> Dashboard</a>
+      <a href="#"><span>👥</span> Clientes</a>
+      <a href="#"><span>📋</span> Tarefas</a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-label">Documentos</div>
+      <a href="#"><span>📁</span> Processos</a>
+      <a href="#"><span>📄</span> Contratos</a>
+      <a href="#"><span>🗓️</span> Audiências</a>
+    </div>
+
+    <div class="user-pill">
+      <div class="user-avatar" id="user-avatar">?</div>
+      <div class="user-info">
+        <div class="user-name" id="user-display-name">—</div>
+        <div class="user-role" id="user-role">Advogado</div>
+      </div>
+      <button class="btn-logout" title="Sair" onclick="fazerLogout()">⏻</button>
+    </div>
   </div>
 
   <div class="main">
+    <div class="topbar">
+      <div>
+        <h1>Painel de Controle</h1>
+        <div class="date" id="current-date"></div>
+      </div>
+      <button class="btn-primary" onclick="abrirModal()">＋ Nova Tarefa</button>
+    </div>
 
-    <h2>Painel</h2>
-    <p id="current-date"></p>
+    <div class="cards">
+      <div class="card total">   <h3>Clientes</h3>   <p id="clientes">—</p><div class="trend">clientes únicos</div></div>
+      <div class="card pendente"><h3>Pendentes</h3>  <p id="pendente">—</p><div class="trend">aguardando ação</div></div>
+      <div class="card andamento"><h3>Em Andamento</h3><p id="andamento">—</p><div class="trend">em execução</div></div>
+      <div class="card revisao"> <h3>Revisão</h3>    <p id="revisao">—</p> <div class="trend">aguardando revisão</div></div>
+      <div class="card concluido"><h3>Concluídas</h3> <p id="concluido">—</p><div class="trend">finalizadas</div></div>
+    </div>
 
-    <table>
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Título</th>
-          <th>Cliente</th>
-          <th>Status</th>
-          <th>Data</th>
-        </tr>
-      </thead>
-
-      <tbody id="tbody"></tbody>
-    </table>
-
+    <div class="section">
+      <div class="section-header">
+        <h2>📋 Tarefas</h2>
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+          <input class="search-box" type="text" placeholder="🔍 Buscar…" oninput="filtrarTabela(this.value)">
+          <div class="filter-bar">
+            <button class="filter-btn active" onclick="setFiltro('todos',this)">Todos</button>
+            <button class="filter-btn" onclick="setFiltro('pendente',this)">Pendente</button>
+            <button class="filter-btn" onclick="setFiltro('andamento',this)">Andamento</button>
+            <button class="filter-btn" onclick="setFiltro('revisao',this)">Revisão</button>
+            <button class="filter-btn" onclick="setFiltro('concluido',this)">Concluído</button>
+          </div>
+        </div>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>#</th><th>Título</th><th>Cliente</th>
+            <th>Status</th><th>Data</th><th>Obs.</th>
+          </tr>
+        </thead>
+        <tbody id="tbody">
+          <tr><td colspan="6"><div class="empty-state"><div class="icon">⚖️</div><p><span class="spinner"></span>Carregando…</p></div></td></tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>
 
-<!-- FIREBASE -->
+<!-- MODAL NOVA TAREFA -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <h3>➕ Nova Tarefa</h3>
+    <div class="form-group"><label>Título *</label><input id="f-titulo" type="text" placeholder="Ex: Elaborar petição inicial"></div>
+    <div class="form-group"><label>Cliente *</label><input id="f-cliente" type="text" placeholder="Nome do cliente"></div>
+    <div class="form-group">
+      <label>Status *</label>
+      <select id="f-status">
+        <option value="pendente">⏳ Pendente</option>
+        <option value="andamento">🔵 Em Andamento</option>
+        <option value="revisao">🟣 Em Revisão</option>
+        <option value="concluido">✅ Concluído</option>
+      </select>
+    </div>
+    <div class="form-group"><label>Observações</label><textarea id="f-obs" placeholder="Detalhes…"></textarea></div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="fecharModal()">Cancelar</button>
+      <button class="btn-primary" onclick="salvarTarefa()">💾 Salvar</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<!-- ══════════ FIREBASE ══════════ -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import {
-    getFirestore,
-    collection,
-    getDocs,
-    query,
-    orderBy,
-    addDoc
+    getFirestore, collection, addDoc, getDocs, query, orderBy
   } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
   import {
     getAuth,
     signInWithEmailAndPassword,
     signOut,
-    onAuthStateChanged,
-    setPersistence,
-    browserLocalPersistence
+    onAuthStateChanged
   } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-  // 🔥 COLOCA SEU FIREBASE AQUI
+  // ─── CONFIGURE SEU FIREBASE ──────────────────────────
   const firebaseConfig = {
-    apiKey: "SUA_API_KEY",
-    authDomain: "SEU_PROJETO.firebaseapp.com",
-    projectId: "SEU_PROJECT_ID",
-    appId: "SEU_APP_ID"
+    apiKey:      "SUA_API_KEY",
+    authDomain:  "SEU_PROJETO.firebaseapp.com",
+    projectId:   "SEU_PROJETO_ID",
   };
+  // ─────────────────────────────────────────────────────
 
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
+  const app  = initializeApp(firebaseConfig);
+  const db   = getFirestore(app);
   const auth = getAuth(app);
 
-  await setPersistence(auth, browserLocalPersistence);
+  let todasTarefas = [];
+  let filtroAtivo  = 'todos';
 
-  let tarefas = [];
-
-  // LOGIN STATE
+  // ── AUTH STATE ──
   onAuthStateChanged(auth, user => {
     if (user) {
       mostrarApp(user);
@@ -201,72 +504,196 @@
 
   function mostrarApp(user) {
     document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('app-screen').style.display = 'block';
+    document.getElementById('app-screen').style.display  = 'block';
+    document.getElementById('current-date').textContent =
+      new Date().toLocaleDateString('pt-BR', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
 
-    document.getElementById('user-display-name').innerText =
-      user.email.split('@')[0];
+    const email  = user.email || '';
+    const initials = email.substring(0,2).toUpperCase();
+    const name   = email.split('@')[0];
 
-    document.getElementById('current-date').innerText =
-      new Date().toLocaleDateString('pt-BR');
+    document.getElementById('user-avatar').textContent       = initials;
+    document.getElementById('user-display-name').textContent = name;
+
+    // Marcar admin visualmente
+    if (email.toLowerCase().includes('admin') || user.email === 'otaviomartins@megaadvocacia.com.br') {
+      document.getElementById('user-role').textContent = '🛡️ Administrador';
+    }
   }
 
   function mostrarLogin() {
-    document.getElementById('app-screen').style.display = 'none';
+    document.getElementById('app-screen').style.display  = 'none';
     document.getElementById('login-screen').style.display = 'flex';
   }
 
-  // LOGIN
-  window.fazerLogin = async function () {
-    const email = document.getElementById('l-email').value;
+  // ── LOGIN ──
+  window.fazerLogin = async function() {
+    const email = document.getElementById('l-email').value.trim();
     const senha = document.getElementById('l-senha').value;
-    const err = document.getElementById('login-error');
+    const errEl = document.getElementById('login-error');
+    const btn   = document.getElementById('btn-entrar');
 
-    try {
-      await signInWithEmailAndPassword(auth, email, senha);
-    } catch (e) {
-      err.style.display = 'block';
-      err.innerText = e.code;
-    }
-  };
-
-  window.fazerLogout = async function () {
-    await signOut(auth);
-  };
-
-  // CARREGAR DADOS
-  async function carregar() {
-    const q = query(collection(db, 'tarefas'), orderBy('data', 'desc'));
-    const snap = await getDocs(q);
-
-    tarefas = [];
-
-    snap.forEach(doc => {
-      tarefas.push(doc.data());
-    });
-
-    render();
-  }
-
-  function render() {
-    const tbody = document.getElementById('tbody');
-
-    if (!tarefas.length) {
-      tbody.innerHTML = "<tr><td colspan='5'>Sem tarefas</td></tr>";
+    if (!email || !senha) {
+      errEl.style.display = 'block';
+      errEl.textContent   = '⚠️ Preencha e-mail e senha.';
       return;
     }
 
-    tbody.innerHTML = tarefas.map((t, i) => `
+    btn.disabled = true;
+    btn.textContent = 'Entrando…';
+    errEl.style.display = 'none';
+
+    try {
+      await signInWithEmailAndPassword(auth, email, senha);
+    } catch(e) {
+      const msgs = {
+        'auth/user-not-found':   'Usuário não encontrado.',
+        'auth/wrong-password':   'Senha incorreta.',
+        'auth/invalid-email':    'E-mail inválido.',
+        'auth/too-many-requests':'Muitas tentativas. Tente mais tarde.',
+        'auth/invalid-credential':'E-mail ou senha incorretos.',
+      };
+      errEl.style.display = 'block';
+      errEl.textContent   = '❌ ' + (msgs[e.code] || e.message);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Entrar';
+    }
+  }
+
+  // Enter para login
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && document.getElementById('login-screen').style.display !== 'none') {
+      window.fazerLogin();
+    }
+  });
+
+  // ── LOGOUT ──
+  window.fazerLogout = async function() {
+    if (!confirm('Deseja sair do sistema?')) return;
+    await signOut(auth);
+    toast('Sessão encerrada.');
+  }
+
+  // ── CARREGAR TAREFAS ──
+  async function carregar() {
+    try {
+      const q        = query(collection(db, 'tarefas'), orderBy('data', 'desc'));
+      const snapshot = await getDocs(q);
+      let p=0, a=0, r=0, c=0;
+      const clientes = new Set();
+      todasTarefas = [];
+
+      snapshot.forEach(doc => {
+        const d = { id: doc.id, ...doc.data() };
+        todasTarefas.push(d);
+        clientes.add(d.cliente);
+        if (d.status==='pendente')  p++;
+        if (d.status==='andamento') a++;
+        if (d.status==='revisao')   r++;
+        if (d.status==='concluido') c++;
+      });
+
+      document.getElementById('clientes').innerText  = clientes.size;
+      document.getElementById('pendente').innerText  = p;
+      document.getElementById('andamento').innerText = a;
+      document.getElementById('revisao').innerText   = r;
+      document.getElementById('concluido').innerText = c;
+
+      renderTabela(todasTarefas);
+    } catch(e) {
+      renderVazio('Configure o Firebase para visualizar tarefas.');
+    }
+  }
+
+  // ── RENDER ──
+  function renderTabela(lista) {
+    const tbody = document.getElementById('tbody');
+    if (!lista.length) { renderVazio('Nenhuma tarefa encontrada.'); return; }
+
+    tbody.innerHTML = lista.map((d, i) => `
       <tr>
-        <td>${i+1}</td>
-        <td>${t.titulo}</td>
-        <td>${t.cliente}</td>
-        <td>${t.status}</td>
-        <td>${new Date(t.data).toLocaleDateString()}</td>
+        <td style="color:#555;font-size:12px">${i+1}</td>
+        <td style="font-weight:600">${esc(d.titulo)}</td>
+        <td>${esc(d.cliente)}</td>
+        <td><span class="badge badge-${d.status}">${labelStatus(d.status)}</span></td>
+        <td style="color:#666;font-size:12px">${formatData(d.data)}</td>
+        <td style="color:#666;font-size:12px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(d.obs||'—')}</td>
       </tr>
     `).join('');
   }
 
-</script>
+  function renderVazio(msg) {
+    document.getElementById('tbody').innerHTML = `
+      <tr><td colspan="6"><div class="empty-state"><div class="icon">📭</div><p>${msg}</p></div></td></tr>`;
+  }
 
+  // ── FILTROS ──
+  window.setFiltro = function(status, btn) {
+    filtroAtivo = status;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    aplicarFiltros(document.querySelector('.search-box')?.value || '');
+  }
+
+  window.filtrarTabela = function(termo) { aplicarFiltros(termo); }
+
+  function aplicarFiltros(termo='') {
+    let lista = filtroAtivo !== 'todos' ? todasTarefas.filter(t => t.status === filtroAtivo) : todasTarefas;
+    if (termo) {
+      const q = termo.toLowerCase();
+      lista = lista.filter(t => (t.titulo||'').toLowerCase().includes(q) || (t.cliente||'').toLowerCase().includes(q));
+    }
+    renderTabela(lista);
+  }
+
+  // ── MODAL ──
+  window.abrirModal  = () => document.getElementById('modal').classList.add('show');
+  window.fecharModal = () => {
+    document.getElementById('modal').classList.remove('show');
+    ['f-titulo','f-cliente','f-obs'].forEach(id => document.getElementById(id).value='');
+    document.getElementById('f-status').value = 'pendente';
+  }
+  document.getElementById('modal').addEventListener('click', e => {
+    if (e.target === document.getElementById('modal')) window.fecharModal();
+  });
+
+  // ── SALVAR ──
+  window.salvarTarefa = async function() {
+    const titulo  = document.getElementById('f-titulo').value.trim();
+    const cliente = document.getElementById('f-cliente').value.trim();
+    const status  = document.getElementById('f-status').value;
+    const obs     = document.getElementById('f-obs').value.trim();
+
+    if (!titulo || !cliente) { toast('Preencha Título e Cliente!', true); return; }
+
+    try {
+      await addDoc(collection(db, 'tarefas'), {
+        titulo, cliente, status, obs,
+        data: new Date().toISOString(),
+        criadoPor: auth.currentUser?.email || 'desconhecido'
+      });
+      window.fecharModal();
+      toast('Tarefa salva com sucesso! ✅');
+      await carregar();
+    } catch(e) {
+      toast('Erro ao salvar: ' + e.message, true);
+    }
+  }
+
+  // ── HELPERS ──
+  function labelStatus(s) {
+    return { pendente:'⏳ Pendente', andamento:'🔵 Andamento', revisao:'🟣 Revisão', concluido:'✅ Concluído' }[s] || s;
+  }
+  function formatData(iso) { try { return new Date(iso).toLocaleDateString('pt-BR'); } catch { return '—'; } }
+  function esc(s='') { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  window.toast = function(msg, err=false) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.className = 'show' + (err ? ' error' : '');
+    setTimeout(() => el.className = '', 3000);
+  }
+</script>
 </body>
 </html>
