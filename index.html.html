@@ -3,77 +3,109 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Adv System — Gestão Jurídica Premium</title>
+  <meta name="description" content="Adv System - Gestão Jurídica de Alta Performance">
+  <title>Adv System | Portal de Justiça Digital</title>
+  
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+  
   <style>
     :root {
-      --bg-dark: #080808;
-      --panel-dark: #121212;
+      --bg-dark: #050505;
+      --panel-dark: #0f0f10;
       --accent: #3b82f6;
       --accent-hover: #2563eb;
       --text-main: #f8fafc;
-      --text-dim: #94a3b8;
-      --border: #262626;
-      --glass: rgba(255, 255, 255, 0.03);
+      --text-dim: #64748b;
+      --border: #1e1e20;
+      --glass: rgba(255, 255, 255, 0.02);
+      --success: #10b981;
+      --warning: #f59e0b;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; transition: all 0.2s ease; }
-    body { font-family: 'Inter', sans-serif; background: var(--bg-dark); color: var(--text-main); min-height: 100vh; overflow: hidden; }
+    * { box-sizing: border-box; margin: 0; padding: 0; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
+    body { font-family: 'Inter', sans-serif; background: var(--bg-dark); color: var(--text-main); min-height: 100vh; overflow: hidden; letter-spacing: -0.01em; }
 
-    /* ══════════════════════════════
-       TELA DE LOGIN
-    ══════════════════════════════ */
+    /* --- LOGIN UI --- */
     #login-screen {
       min-height: 100vh; display: flex; align-items: center; justify-content: center;
-      background: radial-gradient(circle at top right, #1e293b 0%, #080808 60%);
+      background: radial-gradient(circle at 70% 30%, #1e293b 0%, #050505 70%);
     }
     .login-box {
-      background: var(--panel-dark); border: 1px solid var(--border); border-radius: 24px;
-      padding: 48px; width: 100%; max-width: 420px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+      background: var(--panel-dark); border: 1px solid var(--border); border-radius: 28px;
+      padding: 56px; width: 100%; max-width: 440px; box-shadow: 0 40px 80px -20px rgba(0,0,0,0.8);
+      backdrop-filter: blur(20px);
     }
-    .login-logo { text-align: center; margin-bottom: 30px; }
-    .icon-wrap { width: 64px; height: 64px; background: linear-gradient(135deg, var(--accent), #8b5cf6); border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 0 auto 15px; }
-    .login-box input { width: 100%; background: #000; border: 1px solid var(--border); color: white; padding: 14px; border-radius: 12px; margin-bottom: 20px; }
-    .btn-login { width: 100%; background: var(--accent); color: white; border: none; padding: 14px; border-radius: 12px; font-weight: 700; cursor: pointer; }
+    .login-logo { text-align: center; margin-bottom: 40px; }
+    .icon-wrap { 
+      width: 72px; height: 72px; background: linear-gradient(135deg, var(--accent), #6366f1); 
+      border-radius: 20px; display: flex; align-items: center; justify-content: center; 
+      font-size: 36px; margin: 0 auto 20px; box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
+    }
+    .login-logo h1 { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
+    .login-logo p { color: var(--text-dim); font-size: 15px; }
 
-    /* ══════════════════════════════
-       APP CONTAINER (GRID)
-    ══════════════════════════════ */
-    #app-screen { display: none; grid-template-columns: 260px 1fr 350px; height: 100vh; }
+    .login-box input { 
+      width: 100%; background: #000; border: 1px solid var(--border); color: white; 
+      padding: 16px; border-radius: 14px; margin-bottom: 18px; font-size: 15px;
+    }
+    .login-box input:focus { border-color: var(--accent); outline: none; box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1); }
 
-    /* Sidebar */
-    .sidebar { background: var(--panel-dark); border-right: 1px solid var(--border); padding: 32px 24px; display: flex; flex-direction: column; }
-    .nav-item { display: flex; align-items: center; gap: 12px; color: var(--text-dim); text-decoration: none; padding: 12px 16px; border-radius: 12px; cursor: pointer; margin-bottom: 4px; }
-    .nav-item.active { background: var(--glass); color: white; border-left: 3px solid var(--accent); }
+    .btn-login { 
+      width: 100%; background: var(--accent); color: white; border: none; padding: 16px; 
+      border-radius: 14px; font-weight: 600; cursor: pointer; font-size: 16px; margin-top: 10px;
+    }
+    .btn-login:hover { background: var(--accent-hover); transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+    .btn-login:active { transform: translateY(0); }
 
-    /* Main Content */
-    .main-content { padding: 40px; overflow-y: auto; border-right: 1px solid var(--border); }
-    .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; }
-    .card { background: var(--panel-dark); border: 1px solid var(--border); border-radius: 20px; padding: 24px; margin-bottom: 20px; cursor: pointer; }
-    .card:hover { border-color: var(--accent); transform: translateY(-2px); }
+    /* --- APP UI --- */
+    #app-screen { display: none; grid-template-columns: 280px 1fr 380px; height: 100vh; }
 
-    /* Chat Panel */
+    .sidebar { background: var(--panel-dark); border-right: 1px solid var(--border); padding: 40px 24px; display: flex; flex-direction: column; }
+    .nav-item { 
+      display: flex; align-items: center; gap: 14px; color: var(--text-dim); 
+      text-decoration: none; padding: 14px 18px; border-radius: 14px; cursor: pointer; margin-bottom: 6px; font-weight: 500;
+    }
+    .nav-item:hover { color: white; background: var(--glass); }
+    .nav-item.active { background: rgba(59, 130, 246, 0.08); color: var(--accent); border-right: 3px solid var(--accent); border-radius: 14px 4px 4px 14px; }
+
+    .main-content { padding: 48px; overflow-y: auto; border-right: 1px solid var(--border); }
+    .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
+    .topbar h1 { font-size: 32px; font-weight: 700; }
+
+    .card { 
+      background: var(--panel-dark); border: 1px solid var(--border); border-radius: 22px; 
+      padding: 28px; margin-bottom: 24px; cursor: pointer; position: relative; overflow: hidden;
+    }
+    .card::before { content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 4px; background: transparent; }
+    .card:hover { border-color: var(--accent); transform: translateX(4px); }
+    .card:hover::before { background: var(--accent); }
+
     .chat-panel { background: var(--panel-dark); display: flex; flex-direction: column; }
-    .chat-header { padding: 24px; border-bottom: 1px solid var(--border); }
-    .status-select { width: 100%; background: #000; border: 1px solid var(--border); color: var(--accent); padding: 10px; border-radius: 10px; margin-top: 15px; cursor: pointer; font-weight: 600; }
+    .chat-header { padding: 32px; border-bottom: 1px solid var(--border); }
+    .status-select { 
+      width: 100%; background: #000; border: 1px solid var(--border); color: var(--accent); 
+      padding: 12px; border-radius: 12px; margin-top: 20px; cursor: pointer; font-weight: 600; font-size: 13px;
+    }
     
-    .messages-area { flex: 1; padding: 24px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
-    .msg { max-width: 85%; padding: 12px 16px; border-radius: 16px; font-size: 14px; line-height: 1.5; position: relative; }
+    .messages-area { flex: 1; padding: 32px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; }
+    .msg { max-width: 85%; padding: 14px 20px; border-radius: 18px; font-size: 14px; line-height: 1.6; }
     .msg.sent { align-self: flex-end; background: var(--accent); color: white; border-bottom-right-radius: 4px; }
-    .msg.received { align-self: flex-start; background: var(--border); color: var(--text-main); border-bottom-left-radius: 4px; }
-    .msg-file { display: flex; align-items: center; gap: 8px; margin-top: 8px; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 8px; text-decoration: none; color: inherit; border: 1px solid rgba(255,255,255,0.1); }
+    .msg.received { align-self: flex-start; background: #1a1a1c; color: var(--text-main); border-bottom-left-radius: 4px; }
 
-    /* Input Area */
-    .chat-input-area { padding: 24px; border-top: 1px solid var(--border); }
-    .input-wrapper { display: flex; align-items: center; gap: 12px; background: #000; padding: 10px 16px; border-radius: 16px; border: 1px solid var(--border); }
-    .input-wrapper input[type="text"] { flex: 1; background: transparent; border: none; color: white; outline: none; }
-    .file-label { color: var(--text-dim); cursor: pointer; font-size: 20px; }
-    .file-label:hover { color: var(--accent); }
-    #file-upload { display: none; }
+    .chat-input-area { padding: 32px; border-top: 1px solid var(--border); }
+    .input-wrapper { 
+      display: flex; align-items: center; gap: 14px; background: #000; 
+      padding: 12px 20px; border-radius: 18px; border: 1px solid var(--border); 
+    }
+    .input-wrapper input { flex: 1; background: transparent; border: none; color: white; outline: none; font-size: 14px; }
 
-    /* User Pill */
-    .user-pill { margin-top: auto; background: var(--glass); padding: 16px; border-radius: 16px; display: flex; align-items: center; gap: 12px; }
+    .user-pill { 
+      margin-top: auto; background: var(--glass); padding: 20px; border-radius: 20px; 
+      display: flex; align-items: center; gap: 14px; border: 1px solid var(--border);
+    }
+
+    @media (max-width: 1100px) { #app-screen { grid-template-columns: 80px 1fr 0px; } .nav-text, .chat-panel { display: none; } }
   </style>
 </head>
 <body>
@@ -83,76 +115,77 @@
     <div class="login-logo">
       <div class="icon-wrap">⚖️</div>
       <h1>Adv System</h1>
-      <p>Acesse o painel jurídico</p>
+      <p>Autenticação de Segurança</p>
     </div>
-    <input id="l-email" type="email" placeholder="E-mail profissional">
-    <input id="l-senha" type="password" placeholder="Senha">
-    <button class="btn-login" onclick="fazerLogin()">Entrar no Sistema</button>
-    <div id="login-error" style="color: #ef4444; font-size: 13px; margin-top: 15px; text-align: center; display: none;"></div>
+    <form onsubmit="event.preventDefault(); fazerLogin();">
+      <input id="l-email" type="email" placeholder="E-mail funcional" required>
+      <input id="l-senha" type="password" placeholder="Senha de acesso" required>
+      <button class="btn-login" id="btn-entrar">Acessar Painel Digital</button>
+    </form>
+    <div id="login-error" style="color: #ef4444; font-size: 13px; margin-top: 20px; text-align: center; display: none; padding: 10px; background: rgba(239, 68, 68, 0.1); border-radius: 10px;"></div>
   </div>
 </div>
 
 <div id="app-screen">
   <aside class="sidebar">
-    <div style="font-size: 22px; font-weight: 800; margin-bottom: 40px;">⚖️ AdvSystem</div>
+    <div style="font-size: 24px; font-weight: 800; margin-bottom: 48px; color: var(--accent);">AdvSystem</div>
     <nav>
-      <div class="nav-item active">📊 Dashboard</div>
-      <div class="nav-item">👥 Clientes</div>
-      <div class="nav-item">📁 Processos</div>
-      <div class="nav-item">🗓️ Agenda</div>
+      <div class="nav-item active">📊 <span class="nav-text">Dashboard</span></div>
+      <div class="nav-item">👥 <span class="nav-text">Gestão de Clientes</span></div>
+      <div class="nav-item">📁 <span class="nav-text">Processos Ativos</span></div>
+      <div class="nav-item">🗓️ <span class="nav-text">Agenda Jurídica</span></div>
     </nav>
     <div class="user-pill">
-      <div id="user-avatar" style="width: 35px; height: 35px; background: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold;">?</div>
+      <div id="user-avatar" style="width: 42px; height: 42px; background: linear-gradient(135deg, var(--accent), #6366f1); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 700;">?</div>
       <div style="flex: 1">
-        <div id="user-name" style="font-size: 13px; font-weight: 600;">Carregando...</div>
-        <div style="font-size: 11px; color: var(--text-dim);">Advogado</div>
+        <div id="user-name" style="font-size: 14px; font-weight: 600; color: white;">Usuário</div>
+        <div style="font-size: 11px; color: var(--text-dim);">Jurisconsulto</div>
       </div>
-      <button onclick="fazerLogout()" style="background: none; border: none; color: var(--text-dim); cursor: pointer;">⏻</button>
+      <button onclick="fazerLogout()" style="background: none; border: none; color: var(--text-dim); cursor: pointer; padding: 5px;">⏻</button>
     </div>
   </aside>
 
   <main class="main-content">
     <div class="topbar">
-      <h1>Processos Recentes</h1>
-      <button style="background: var(--accent); color: white; border: none; padding: 12px 24px; border-radius: 12px; font-weight: 600; cursor: pointer;">+ Novo Processo</button>
+      <h1>Processos</h1>
+      <button style="background: var(--accent); color: white; border: none; padding: 14px 28px; border-radius: 14px; font-weight: 600; cursor: pointer;">Novo Caso Clínico</button>
     </div>
     
     <div id="process-list">
       <div class="card">
-        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-          <strong>Ação Indenizatória - Proc. #2281</strong>
-          <span style="color: #f59e0b; font-size: 11px; font-weight: 700; text-transform: uppercase;">● Em Andamento</span>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+          <strong style="font-size: 16px;">Ação Indenizatória — #2281</strong>
+          <span style="color: var(--warning); font-size: 11px; font-weight: 700; background: rgba(245, 158, 11, 0.1); padding: 4px 10px; border-radius: 20px;">ANDAMENTO</span>
         </div>
-        <p style="color: var(--text-dim); font-size: 13px;">Cliente: Ricardo Almeida vs. Banco Central</p>
+        <p style="color: var(--text-dim); font-size: 14px;">Cliente: Ricardo Almeida vs. Instituição Bancária</p>
       </div>
     </div>
   </main>
 
   <section class="chat-panel">
     <div class="chat-header">
-      <h3 style="font-size: 16px;">Atendimento ao Cliente</h3>
-      <p style="font-size: 12px; color: var(--text-dim);">Caso: #2281 - Ricardo Almeida</p>
+      <h3 style="font-size: 18px; font-weight: 700;">Central de Mensagens</h3>
+      <p style="font-size: 13px; color: var(--text-dim); margin-top: 4px;">Ref: Ricardo Almeida</p>
       
       <select class="status-select" onchange="atualizarStatus(this.value)">
-        <option value="andamento">Status: Em Andamento</option>
-        <option value="pendente">Status: Pendente de Documento</option>
-        <option value="revisao">Status: Em Revisão</option>
-        <option value="concluido">Status: Concluído</option>
+        <option value="andamento">Status: Em Instrução</option>
+        <option value="pendente">Status: Pendência Documental</option>
+        <option value="revisao">Status: Análise de Mérito</option>
+        <option value="concluido">Status: Arquivado/Concluído</option>
       </select>
     </div>
 
     <div class="messages-area" id="chat-messages">
-      <div class="msg received">Bom dia, Dr. Alguma novidade sobre o prazo?</div>
-      <div class="msg sent">Bom dia! Já estamos finalizando a réplica.</div>
+      <div class="msg received">Prezados, favor informar o andamento do prazo recursal.</div>
+      <div class="msg sent">Diligência em curso. Protocolo previsto para as 17h.</div>
     </div>
 
     <div class="chat-input-area">
       <div class="input-wrapper">
-        <label for="file-upload" class="file-label" title="Anexar Documento">📎</label>
-        <input type="file" id="file-upload" onchange="enviarArquivo(this)">
-        
-        <input type="text" id="chat-input" placeholder="Digite sua mensagem...">
-        <button onclick="enviarTexto()" style="background: var(--accent); border: none; color: white; padding: 8px 16px; border-radius: 10px; cursor: pointer; font-weight: 600;">Enviar</button>
+        <label for="file-upload" style="cursor:pointer; font-size: 20px;">📎</label>
+        <input type="file" id="file-upload" style="display:none" onchange="enviarArquivo(this)">
+        <input type="text" id="chat-input" placeholder="Comunicar ao cliente...">
+        <button onclick="enviarTexto()" style="background: var(--accent); border: none; color: white; padding: 10px 20px; border-radius: 12px; cursor: pointer; font-weight: 600;">Enviar</button>
       </div>
     </div>
   </section>
@@ -161,9 +194,8 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import { getFirestore, collection, addDoc, query, onSnapshot, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  // ─── CONFIGURAÇÃO DO SEU FIREBASE ───
   const firebaseConfig = {
     apiKey: "SUA_API_KEY",
     authDomain: "SEU_PROJETO.firebaseapp.com",
@@ -177,12 +209,11 @@
   const auth = getAuth(app);
   const db = getFirestore(app);
 
-  // AUTH STATE
   onAuthStateChanged(auth, user => {
     if (user) {
       document.getElementById('login-screen').style.display = 'none';
       document.getElementById('app-screen').style.display = 'grid';
-      document.getElementById('user-name').textContent = user.email.split('@')[0];
+      document.getElementById('user-name').textContent = user.email.split('@')[0].toUpperCase();
       document.getElementById('user-avatar').textContent = user.email.substring(0,1).toUpperCase();
     } else {
       document.getElementById('login-screen').style.display = 'flex';
@@ -190,22 +221,27 @@
     }
   });
 
-  // LOGIN
   window.fazerLogin = async () => {
+    const btn = document.getElementById('btn-entrar');
     const email = document.getElementById('l-email').value;
     const senha = document.getElementById('l-senha').value;
+    
+    btn.textContent = "Autenticando...";
+    btn.disabled = true;
+
     try {
       await signInWithEmailAndPassword(auth, email, senha);
     } catch (e) {
       const err = document.getElementById('login-error');
       err.style.display = 'block';
-      err.textContent = "Erro: Credenciais inválidas.";
+      err.textContent = "Falha na autenticação: Verifique suas credenciais.";
+      btn.textContent = "Acessar Painel Digital";
+      btn.disabled = false;
     }
   };
 
   window.fazerLogout = () => signOut(auth);
 
-  // CHAT - ENVIAR TEXTO
   window.enviarTexto = () => {
     const input = document.getElementById('chat-input');
     if(!input.value.trim()) return;
@@ -213,30 +249,25 @@
     input.value = "";
   };
 
-  // CHAT - ENVIAR ARQUIVO
   window.enviarArquivo = (input) => {
     if(input.files[0]) {
-      const nome = input.files[0].name;
-      const html = `Documento enviado: <br> <a href="#" class="msg-file">📄 ${nome}</a>`;
+      const html = `Documento Anexado: <br> <small style="opacity:0.8">📄 ${input.files[0].name}</small>`;
       adicionarBolha(html, 'sent', true);
     }
   };
 
-  // ATUALIZAR STATUS
   window.atualizarStatus = (status) => {
-    const labels = { andamento: 'EM ANDAMENTO', pendente: 'PENDENTE', revisao: 'REVISÃO', concluido: 'CONCLUÍDO' };
-    const html = `🚀 O status do processo foi alterado para: <strong>${labels[status]}</strong>`;
-    adicionarBolha(html, 'received');
+    const labels = { andamento: 'EM INSTRUÇÃO', pendente: 'PENDÊNCIA', revisao: 'ANÁLISE', concluido: 'CONCLUÍDO' };
+    adicionarBolha(`Sincronização: Status alterado para ${labels[status]}`, 'received');
   };
 
   function adicionarBolha(conteudo, tipo, isHTML = false) {
     const area = document.getElementById('chat-messages');
     const div = document.createElement('div');
     div.className = `msg ${tipo}`;
-    if(isHTML) div.innerHTML = conteudo;
-    else div.textContent = conteudo;
+    isHTML ? div.innerHTML = conteudo : div.textContent = conteudo;
     area.appendChild(div);
-    area.scrollTop = area.scrollHeight;
+    area.scrollTo({ top: area.scrollHeight, behavior: 'smooth' });
   }
 </script>
 </body>
