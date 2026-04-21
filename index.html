@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<title>Painel Jurídico</title>
+
+<style>
+body{
+margin:0;
+font-family:Arial;
+background:#0f0f0f;
+color:white;
+}
+
+.sidebar{
+width:220px;
+height:100vh;
+position:fixed;
+background:#0a1f44;
+padding:20px;
+}
+
+.sidebar h2{margin-bottom:30px;}
+.sidebar a{
+display:block;
+color:white;
+text-decoration:none;
+margin:12px 0;
+cursor:pointer;
+}
+
+.main{
+margin-left:240px;
+padding:20px;
+}
+
+.cards{
+display:grid;
+grid-template-columns:repeat(5,1fr);
+gap:10px;
+}
+
+.card{
+background:#1a1a1a;
+padding:15px;
+border-radius:10px;
+cursor:pointer;
+text-align:center;
+}
+
+.card:hover{background:#222;}
+
+.task{
+background:#1a1a1a;
+padding:10px;
+margin-top:10px;
+border-radius:8px;
+}
+
+button{
+margin-top:10px;
+padding:10px;
+background:#0a1f44;
+color:white;
+border:none;
+border-radius:6px;
+cursor:pointer;
+}
+
+input,select{
+padding:8px;
+margin:5px 0;
+width:100%;
+}
+</style>
+</head>
+
+<body>
+
+<div class="sidebar">
+<h2>Mega Advocacia</h2>
+
+<a onclick="show('dashboard')">Painel</a>
+<a onclick="show('tasks')">Tarefas</a>
+<a onclick="show('clients')">Clientes</a>
+<a onclick="show('config')">Configuração</a>
+</div>
+
+<div class="main">
+
+<!-- DASHBOARD -->
+<div id="dashboard">
+<h1>Dashboard</h1>
+
+<div class="cards">
+<div class="card" onclick="filter('pendente')">
+<h3>Pendentes</h3>
+<p id="p">0</p>
+</div>
+
+<div class="card" onclick="filter('andamento')">
+<h3>Andamento</h3>
+<p id="a">0</p>
+</div>
+
+<div class="card" onclick="filter('revisao')">
+<h3>Revisão</h3>
+<p id="r">0</p>
+</div>
+
+<div class="card" onclick="filter('concluido')">
+<h3>Concluídas</h3>
+<p id="c">0</p>
+</div>
+
+<div class="card" onclick="filter('all')">
+<h3>Total</h3>
+<p id="t">0</p>
+</div>
+</div>
+
+</div>
+
+<!-- TASKS -->
+<div id="tasks" style="display:none;">
+<h1>Tarefas</h1>
+
+<input id="titulo" placeholder="Título" />
+<input id="responsavel" placeholder="Responsável" />
+
+<select id="status">
+<option value="pendente">Pendente</option>
+<option value="andamento">Andamento</option>
+<option value="revisao">Revisão</option>
+<option value="concluido">Concluído</option>
+</select>
+
+<button onclick="addTask()">Criar tarefa</button>
+
+<div id="list"></div>
+</div>
+
+<!-- CLIENTS -->
+<div id="clients" style="display:none;">
+<h1>Clientes</h1>
+<p>Em breve</p>
+</div>
+
+<!-- CONFIG -->
+<div id="config" style="display:none;">
+<h1>Configurações</h1>
+<p>Em breve</p>
+</div>
+
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+apiKey: "SUA_KEY",
+authDomain: "SEU_PROJETO.firebaseapp.com",
+projectId: "SEU_PROJETO",
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+let tasks = [];
+let currentFilter = "all";
+
+window.show = (id)=>{
+document.getElementById("dashboard").style.display="none";
+document.getElementById("tasks").style.display="none";
+document.getElementById("clients").style.display="none";
+document.getElementById("config").style.display="none";
+document.getElementById(id).style.display="block";
+}
+
+window.addTask = async ()=>{
+let titulo = document.getElementById("titulo").value;
+let responsavel = document.getElementById("responsavel").value;
+let status = document.getElementById("status").value;
+
+await addDoc(collection(db,"tasks"),{
+titulo,
+responsavel,
+status,
+data:new Date().toISOString()
+});
+
+load();
+}
+
+window.filter = (f)=>{
+currentFilter = f;
+render();
+}
+
+async function load(){
+const snap = await getDocs(collection(db,"tasks"));
+tasks = [];
+
+snap.forEach(d=>{
+tasks.push({id:d.id,...d.data()});
+});
+
+render();
+updateDashboard();
+}
+
+function render(){
+let list = document.getElementById("list");
+list.innerHTML = "";
+
+let filtered = tasks;
+
+if(currentFilter !== "all"){
+filtered = tasks.filter(t=>t.status===currentFilter);
+}
+
+filtered.forEach(t=>{
+list.innerHTML += `
+<div class="task">
+<b>${t.titulo}</b><br>
+Responsável: ${t.responsavel}<br>
+Status: ${t.status}
+</div>
+`;
+});
+}
+
+function updateDashboard(){
+let p=0,a=0,r=0,c=0;
+
+tasks.forEach(t=>{
+if(t.status==="pendente")p++;
+if(t.status==="andamento")a++;
+if(t.status==="revisao")r++;
+if(t.status==="concluido")c++;
+});
+
+document.getElementById("p").innerText=p;
+document.getElementById("a").innerText=a;
+document.getElementById("r").innerText=r;
+document.getElementById("c").innerText=c;
+document.getElementById("t").innerText=tasks.length;
+}
+
+load();
+</script>
+
+</body>
+</html>
