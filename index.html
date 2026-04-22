@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Adv System — UI Pro (Funcional)</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',sans-serif;background:#0b0f1a;color:#e5e7eb}
+.container{display:flex}
+.sidebar{width:260px;height:100vh;background:#0f172a;padding:20px;border-right:1px solid #1f2937}
+.sidebar h2{margin-bottom:20px}
+.sidebar a{display:block;padding:12px;border-radius:10px;margin-bottom:8px;color:#9ca3af;cursor:pointer}
+.sidebar a:hover,.active{background:#1e293b;color:#fff}
+.main{flex:1;padding:25px}
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}
+.card{background:#111827;padding:20px;border-radius:12px}
+.card h3{font-size:13px;color:#9ca3af;margin-bottom:10px}
+.card p{font-size:24px;font-weight:bold}
+.toolbar{display:flex;gap:10px;margin:20px 0}
+input,select{padding:10px;border-radius:8px;border:none;background:#1f2937;color:#fff}
+button{background:#2563eb;border:none;padding:10px 15px;border-radius:8px;color:#fff;cursor:pointer}
+table{width:100%;border-collapse:collapse}
+th,td{padding:12px;border-bottom:1px solid #1f2937}
+.badge{padding:4px 10px;border-radius:20px;font-size:12px}
+.pendente{background:#f59e0b33;color:#f59e0b}
+.andamento{background:#3b82f633;color:#3b82f6}
+.revisao{background:#a855f733;color:#a855f7}
+.concluido{background:#22c55e33;color:#22c55e}
+.chat{position:fixed;right:0;top:0;width:350px;height:100%;background:#020617;border-left:1px solid #1f2937;display:none;flex-direction:column}
+.chat-body{flex:1;overflow:auto;padding:10px}
+.msg{background:#1e293b;padding:8px;border-radius:6px;margin-bottom:6px}
+.login{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#000}
+.login-box{background:#111827;padding:30px;border-radius:12px;width:300px}
+</style>
+</head>
+<body>
+
+<div class="login" id="login">
+  <div class="login-box">
+    <h2>Login</h2>
+    <input id="email" placeholder="Email"><br>
+    <input id="senha" type="password" placeholder="Senha"><br>
+    <button onclick="login()">Entrar</button>
+  </div>
+</div>
+
+<div class="container" id="app" style="display:none">
+<div class="sidebar">
+<h2>⚖️ Adv UI</h2>
+<a class="active" onclick="openTab('dashboard')">Dashboard</a>
+<a onclick="openTab('tasks')">Tarefas</a>
+</div>
+
+<div class="main">
+
+<div id="dashboard">
+<div class="header"><h1>Dashboard</h1></div>
+<div class="grid">
+<div class="card"><h3>Pendentes</h3><p id="c1">0</p></div>
+<div class="card"><h3>Andamento</h3><p id="c2">0</p></div>
+<div class="card"><h3>Revisão</h3><p id="c3">0</p></div>
+<div class="card"><h3>Concluído</h3><p id="c4">0</p></div>
+</div>
+</div>
+
+<div id="tasks" style="display:none">
+<h1>Tarefas</h1>
+<div class="toolbar">
+<input id="titulo" placeholder="Título">
+<input id="cliente" placeholder="Cliente">
+<input id="responsavel" placeholder="Responsável">
+<input type="date" id="prazo">
+<select id="status">
+<option value="pendente">Pendente</option>
+<option value="andamento">Andamento</option>
+<option value="revisao">Revisão</option>
+<option value="concluido">Concluído</option>
+</select>
+<button onclick="addTask()">Salvar</button>
+</div>
+<table>
+<thead><tr><th>Título</th><th>Cliente</th><th>Resp</th><th>Prazo</th><th>Status</th><th>💬</th><th>X</th></tr></thead>
+<tbody id="list"></tbody>
+</table>
+</div>
+
+</div>
+</div>
+
+<div class="chat" id="chat">
+<div class="chat-body" id="msgs"></div>
+<input id="msg"><button onclick="sendMsg()">Enviar</button>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, collection, addDoc, query, onSnapshot, deleteDoc, doc, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig={
+apiKey:"COLE_SUA_API_KEY_AQUI",
+authDomain:"sistemamega-a5b62.firebaseapp.com",
+projectId:"sistemamega-a5b62"
+};
+
+const app=initializeApp(firebaseConfig);
+const auth=getAuth(app);
+const db=getFirestore(app);
+let currentTask=null;
+
+window.login=()=>{
+signInWithEmailAndPassword(auth,email.value,senha.value);
+}
+
+window.openTab=(id)=>{
+document.querySelectorAll('.main > div').forEach(d=>d.style.display='none');
+document.getElementById(id).style.display='block';
+}
+
+window.addTask=async()=>{
+await addDoc(collection(db,'tarefas'),{
+titulo:titulo.value,
+cliente:cliente.value,
+responsavel:responsavel.value,
+prazo:prazo.value,
+status:status.value,
+userId:auth.currentUser.uid
+});
+}
+
+function load(){
+const q=query(collection(db,'tarefas'),where('userId','==',auth.currentUser.uid));
+onSnapshot(q,snap=>{
+let html="";
+let c={pendente:0,andamento:0,revisao:0,concluido:0};
+snap.forEach(d=>{
+let t=d.data();
+c[t.status]++;
+html+=`<tr>
+<td>${t.titulo}</td>
+<td>${t.cliente}</td>
+<td>${t.responsavel}</td>
+<td>${t.prazo}</td>
+<td><span class='badge ${t.status}'>${t.status}</span></td>
+<td><button onclick="openChat('${d.id}')">💬</button></td>
+<td><button onclick="del('${d.id}')">X</button></td>
+</tr>`;
+});
+list.innerHTML=html;
+c1.innerText=c.pendente;
+c2.innerText=c.andamento;
+c3.innerText=c.revisao;
+c4.innerText=c.concluido;
+});
+}
+
+window.del=(id)=>deleteDoc(doc(db,'tarefas',id));
+
+window.openChat=(id)=>{currentTask=id;chat.style.display='flex';loadMsgs();}
+
+window.sendMsg=async()=>{
+await addDoc(collection(db,'tarefas',currentTask,'msgs'),{texto:msg.value,user:auth.currentUser.email});
+msg.value='';
+}
+
+function loadMsgs(){
+onSnapshot(collection(db,'tarefas',currentTask,'msgs'),snap=>{
+msgs.innerHTML='';
+snap.forEach(d=>msgs.innerHTML+=`<div class='msg'>${d.data().texto}</div>`);
+});
+}
+
+onAuthStateChanged(auth,u=>{
+if(u){login.style.display='none';app.style.display='flex';load();}
+});
+</script>
+
+</body>
+</html>
