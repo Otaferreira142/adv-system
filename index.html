@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Adv System PRO</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI';background:#0b0f1a;color:#fff}
+.sidebar{width:250px;height:100vh;position:fixed;background:#0f1f3d;padding:20px;display:flex;flex-direction:column}
+.sidebar h2{margin-bottom:20px}
+.sidebar a{padding:10px;border-radius:8px;color:#9fbfff;margin-bottom:8px;cursor:pointer}
+.sidebar a:hover{background:#1a3b70}
+.main{margin-left:270px;padding:25px}
+.card{background:#141c2e;padding:20px;border-radius:12px;margin-bottom:15px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px}
+input,select{width:100%;padding:10px;border-radius:8px;border:none;margin:5px 0;background:#0d1526;color:#fff}
+button{padding:10px;border:none;border-radius:8px;background:#2d6cdf;color:#fff;cursor:pointer}
+table{width:100%;margin-top:20px;border-collapse:collapse}
+th,td{padding:12px;border-bottom:1px solid #1f2a44}
+.badge{padding:5px 10px;border-radius:20px;font-size:12px}
+.pendente{background:#f59e0b33;color:#f59e0b}
+.andamento{background:#3b82f633;color:#3b82f6}
+.revisao{background:#a855f733;color:#a855f7}
+.concluido{background:#22c55e33;color:#22c55e}
+.chat{position:fixed;right:0;top:0;width:320px;height:100%;background:#0d1526;padding:10px;display:none;flex-direction:column}
+.chat-messages{flex:1;overflow:auto;margin-bottom:10px}
+.msg{margin-bottom:8px;padding:8px;border-radius:6px;background:#1a2540}
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+<h2>⚖️ Adv PRO</h2>
+<a onclick="openTab('painel')">Dashboard</a>
+<a onclick="openTab('tarefas')">Tarefas</a>
+<a onclick="openTab('clientes')">Clientes</a>
+<a onclick="openTab('equipe')">Equipe</a>
+<a onclick="openTab('config')">Config</a>
+<button onclick="logout()">Sair</button>
+</div>
+
+<div class="main">
+
+<div id="painel">
+<h1>Dashboard</h1>
+<div class="grid">
+<div class="card">Pendentes <h2 id="c1">0</h2></div>
+<div class="card">Andamento <h2 id="c2">0</h2></div>
+<div class="card">Revisão <h2 id="c3">0</h2></div>
+<div class="card">Concluído <h2 id="c4">0</h2></div>
+</div>
+</div>
+
+<div id="tarefas" style="display:none">
+<h1>Tarefas</h1>
+<div class="card">
+<input id="titulo" placeholder="Título">
+<input id="cliente" placeholder="Cliente">
+<input id="responsavel" placeholder="Responsável">
+<input type="date" id="prazo">
+<select id="status">
+<option value="pendente">Pendente</option>
+<option value="andamento">Andamento</option>
+<option value="revisao">Revisão</option>
+<option value="concluido">Concluído</option>
+</select>
+<button onclick="addTask()">Salvar</button>
+</div>
+<table>
+<thead><tr><th>Título</th><th>Cliente</th><th>Resp</th><th>Prazo</th><th>Status</th><th>Chat</th><th>X</th></tr></thead>
+<tbody id="list"></tbody>
+</table>
+</div>
+
+<div id="clientes" style="display:none">
+<h1>Clientes</h1>
+<div class="card">
+<input id="c_nome" placeholder="Nome">
+<input id="c_email" placeholder="Email">
+<input id="c_tel" placeholder="Telefone">
+<button onclick="addCliente()">Salvar</button>
+</div>
+<ul id="clientesList"></ul>
+</div>
+
+<div id="equipe" style="display:none">
+<h1>Equipe</h1>
+<div class="card">
+<input id="e_nome" placeholder="Nome">
+<input id="e_email" placeholder="Email">
+<input id="e_tel" placeholder="Telefone">
+<button onclick="addEquipe()">Salvar</button>
+</div>
+<ul id="equipeList"></ul>
+</div>
+
+<div id="config" style="display:none">
+<h1>Configurações</h1>
+<p>Sistema profissional base pronto</p>
+</div>
+
+</div>
+
+<div class="chat" id="chat">
+<h3>Chat da tarefa</h3>
+<div class="chat-messages" id="msgs"></div>
+<input id="msg" placeholder="Mensagem">
+<button onclick="sendMsg()">Enviar</button>
+<button onclick="closeChat()">Fechar</button>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, collection, addDoc, query, onSnapshot, deleteDoc, doc, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig={apiKey:"SUA_KEY",authDomain:"sistemamega-a5b62.firebaseapp.com",projectId:"sistemamega-a5b62"};
+
+const app=initializeApp(firebaseConfig);
+const auth=getAuth(app);
+const db=getFirestore(app);
+let currentTask=null;
+
+window.openTab=(t)=>{
+document.querySelectorAll('.main > div').forEach(d=>d.style.display='none');
+document.getElementById(t).style.display='block';
+}
+
+window.logout=()=>signOut(auth);
+
+window.addTask=async()=>{
+await addDoc(collection(db,'tarefas'),{
+titulo:titulo.value,cliente:cliente.value,responsavel:responsavel.value,prazo:prazo.value,status:status.value,userId:auth.currentUser.uid
+});
+}
+
+window.addCliente=async()=>{
+await addDoc(collection(db,'clientes'),{nome:c_nome.value,email:c_email.value,tel:c_tel.value,userId:auth.currentUser.uid});
+}
+
+window.addEquipe=async()=>{
+await addDoc(collection(db,'equipe'),{nome:e_nome.value,email:e_email.value,tel:e_tel.value,userId:auth.currentUser.uid});
+}
+
+function load(){
+const q=query(collection(db,'tarefas'),where('userId','==',auth.currentUser.uid));
+onSnapshot(q,snap=>{
+let html="";
+let c={pendente:0,andamento:0,revisao:0,concluido:0};
+snap.forEach(d=>{
+let t=d.data();
+c[t.status]++;
+html+=`<tr>
+<td>${t.titulo}</td>
+<td>${t.cliente}</td>
+<td>${t.responsavel}</td>
+<td>${t.prazo}</td>
+<td><span class='badge ${t.status}'>${t.status}</span></td>
+<td><button onclick="openChat('${d.id}')">💬</button></td>
+<td><button onclick="del('${d.id}')">X</button></td>
+</tr>`;
+});
+list.innerHTML=html;
+c1.innerText=c.pendente;
+c2.innerText=c.andamento;
+c3.innerText=c.revisao;
+c4.innerText=c.concluido;
+});
+
+onSnapshot(query(collection(db,'clientes'),where('userId','==',auth.currentUser.uid)),snap=>{
+clientesList.innerHTML='';
+snap.forEach(d=>clientesList.innerHTML+=`<li>${d.data().nome}</li>`);
+});
+
+onSnapshot(query(collection(db,'equipe'),where('userId','==',auth.currentUser.uid)),snap=>{
+equipeList.innerHTML='';
+snap.forEach(d=>equipeList.innerHTML+=`<li>${d.data().nome}</li>`);
+});
+}
+
+window.del=async(id)=>deleteDoc(doc(db,'tarefas',id));
+
+window.openChat=(id)=>{currentTask=id;chat.style.display='flex';loadMsgs();}
+window.closeChat=()=>chat.style.display='none';
+
+window.sendMsg=async()=>{
+await addDoc(collection(db,'tarefas',currentTask,'msgs'),{texto:msg.value,user:auth.currentUser.email});
+msg.value='';
+}
+
+function loadMsgs(){
+onSnapshot(collection(db,'tarefas',currentTask,'msgs'),snap=>{
+msgs.innerHTML='';
+snap.forEach(d=>msgs.innerHTML+=`<div class='msg'>${d.data().user}: ${d.data().texto}</div>`);
+});
+}
+
+onAuthStateChanged(auth,u=>{
+if(u){load()}else{
+let email=prompt('email');
+let senha=prompt('senha');
+signInWithEmailAndPassword(auth,email,senha);
+}
+});
+</script>
+
+</body>
+</html>
