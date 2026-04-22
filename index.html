@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel Jurídico (Funcionando)</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Segoe UI;background:#0b0f1a;color:#e5e7eb}
+.container{display:flex}
+.sidebar{width:250px;height:100vh;background:#0f172a;padding:20px;border-right:1px solid #1f2937}
+.sidebar h2{margin-bottom:20px}
+.sidebar a{display:block;padding:12px;border-radius:10px;margin-bottom:8px;color:#9ca3af;cursor:pointer}
+.sidebar a:hover,.active{background:#1e293b;color:#fff}
+.main{flex:1;padding:25px}
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:15px}
+.card{background:#111827;padding:20px;border-radius:12px}
+.card h3{font-size:13px;color:#9ca3af;margin-bottom:10px}
+.card p{font-size:24px;font-weight:bold}
+button{background:#2563eb;border:none;padding:10px 15px;border-radius:8px;color:#fff;cursor:pointer}
+.table{margin-top:20px;background:#111827;border-radius:12px;overflow:hidden}
+table{width:100%;border-collapse:collapse}
+th,td{padding:14px;border-bottom:1px solid #1f2937}
+.badge{padding:5px 10px;border-radius:20px;font-size:12px}
+.pendente{background:#f59e0b33;color:#f59e0b}
+.andamento{background:#3b82f633;color:#3b82f6}
+.revisao{background:#a855f733;color:#a855f7}
+.concluido{background:#22c55e33;color:#22c55e}
+.modal{position:fixed;inset:0;background:#0008;display:none;align-items:center;justify-content:center}
+.modal-box{background:#111827;padding:20px;border-radius:12px;width:300px}
+input,select{width:100%;margin:5px 0;padding:10px;border-radius:8px;border:none;background:#1f2937;color:#fff}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<div class="sidebar">
+<h2>⚖️ Mega Advocacia</h2>
+<a class="active">Painel</a>
+<a>Tarefas</a>
+<a>Clientes</a>
+<a>Equipe</a>
+</div>
+
+<div class="main">
+<div class="header">
+<h1>Dashboard</h1>
+<button onclick="openModal()">+ Adicionar</button>
+</div>
+
+<div class="grid">
+<div class="card"><h3>Pendentes</h3><p id="c1">0</p></div>
+<div class="card"><h3>Em Andamento</h3><p id="c2">0</p></div>
+<div class="card"><h3>Em Revisão</h3><p id="c3">0</p></div>
+<div class="card"><h3>Concluídas</h3><p id="c4">0</p></div>
+<div class="card"><h3>Total</h3><p id="c5">0</p></div>
+</div>
+
+<div class="table">
+<table>
+<thead>
+<tr>
+<th>Título</th>
+<th>Responsável</th>
+<th>Status</th>
+<th>Data</th>
+<th>Ação</th>
+</tr>
+</thead>
+<tbody id="list"></tbody>
+</table>
+</div>
+
+</div>
+</div>
+
+<div class="modal" id="modal">
+<div class="modal-box">
+<h3>Nova Tarefa</h3>
+<input id="titulo" placeholder="Título">
+<input id="responsavel" placeholder="Responsável">
+<select id="status">
+<option value="pendente">Pendente</option>
+<option value="andamento">Em Andamento</option>
+<option value="revisao">Revisão</option>
+<option value="concluido">Concluído</option>
+</select>
+<button onclick="addTask()">Salvar</button>
+<button onclick="closeModal()">Cancelar</button>
+</div>
+</div>
+
+<script>
+let tasks=[];
+
+function openModal(){modal.style.display='flex'}
+function closeModal(){modal.style.display='none'}
+
+function addTask(){
+const t={
+titulo:titulo.value,
+responsavel:responsavel.value,
+status:status.value,
+data:new Date().toLocaleDateString()
+};
+if(!t.titulo||!t.responsavel)return alert('Preencha tudo');
+tasks.push(t);
+render();
+closeModal();
+}
+
+function del(i){tasks.splice(i,1);render()}
+
+function render(){
+list.innerHTML='';
+let c={pendente:0,andamento:0,revisao:0,concluido:0,total:0};
+
+tasks.forEach((t,i)=>{
+c[t.status]++;
+c.total++;
+list.innerHTML+=`<tr>
+<td>${t.titulo}</td>
+<td>${t.responsavel}</td>
+<td><span class='badge ${t.status}'>${t.status}</span></td>
+<td>${t.data}</td>
+<td><button onclick="del(${i})">X</button></td>
+</tr>`;
+});
+
+c1.innerText=c.pendente;
+c2.innerText=c.andamento;
+c3.innerText=c.revisao;
+c4.innerText=c.concluido;
+c5.innerText=c.total;
+}
+</script>
+
+</body>
+</html>
