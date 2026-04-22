@@ -3,86 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Legal Case Management System</title>
+    <title>Activity Management System</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js"></script>
 </head>
 <body>
-    <h1>Legal Case Management System</h1>
-    <form id="caseForm">
-        <input type="text" id="caseTitle" placeholder="Case Title" required>
-        <input type="date" id="caseDate" required>
-        <textarea id="caseDescription" placeholder="Description" required></textarea>
-        <button type="submit">Add Case</button>
-    </form>
-
-    <input type="text" id="searchInput" placeholder="Search Cases" onkeyup="searchCases()">
-    <button onclick="applyFilters()">Apply Filters</button>
-    <div id="casesList"></div>
-
+    <div class="container">
+        <header>
+            <h1>Activity Management System</h1>
+        </header>
+        <nav>
+            <ul>
+                <li><a href="#chat">Chat</a></li>
+                <li><a href="#uploads">File Uploads</a></li>
+                <li><a href="#updates">Updates</a></li>
+                <li><a href="#status">Status</a></li>
+            </ul>
+        </nav>
+        <main>
+            <section id="chat">
+                <h2>Chat Functionality</h2>
+                <div id="chat-box"></div>
+                <textarea placeholder="Type your message..."></textarea>
+                <button onclick="sendMessage()">Send</button>
+            </section>
+            <section id="uploads">
+                <h2>File Upload</h2>
+                <input type="file" id="file-upload" />
+                <button onclick="uploadFile()">Upload</button>
+            </section>
+            <section id="updates">
+                <h2>Updates</h2>
+                <p>Next update scheduled for Friday.</p>
+            </section>
+            <section id="status">
+                <h2>Activity Tracking</h2>
+                <div id="status-tracking"></div>
+            </section>
+        </main>
+    </div>
     <script>
-        // Your web app's Firebase configuration
-        const firebaseConfig = { /* Your Configuration */ };
-        // Initialize Firebase
-        const app = firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-
-        const caseForm = document.getElementById('caseForm');
-        caseForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            addCase();
-        });
-
-        function addCase() {
-            const title = document.getElementById('caseTitle').value;
-            const date = document.getElementById('caseDate').value;
-            const description = document.getElementById('caseDescription').value;
-            db.collection('cases').add({
-                title: title,
-                date: date,
-                description: description
-            }).then(() => {
-                console.log('Case added!');
-                loadCases();
-            });
+        const firebaseConfig = {
+            // Your Firebase configuration here
+        };
+        firebase.initializeApp(firebaseConfig);
+        // Add chat and upload functionality here
+        function sendMessage() {
+            // Implement chat message sending
         }
-
-        function loadCases() {
-            db.collection('cases').get().then((querySnapshot) => {
-                const casesList = document.getElementById('casesList');
-                casesList.innerHTML = '';
-                querySnapshot.forEach((doc) => {
-                    const caseData = doc.data();
-                    casesList.innerHTML += `<div>${caseData.title} - ${caseData.date} <button onclick='editCase("${doc.id}", "${caseData.title}", "${caseData.date}", "${caseData.description}")'>Edit</button></div>`;
-                });
-            });
+        function uploadFile() {
+            // Implement file upload
         }
-
-        function editCase(id, title, date, description) {
-            document.getElementById('caseTitle').value = title;
-            document.getElementById('caseDate').value = date;
-            document.getElementById('caseDescription').value = description;
-            db.collection('cases').doc(id).delete(); // Delete old after editing
-        }
-
-        function searchCases() {
-            const input = document.getElementById('searchInput').value.toLowerCase();
-            const cases = document.getElementById('casesList').children;
-            for (let i = 0; i < cases.length; i++) {
-                if (cases[i].innerText.toLowerCase().includes(input)) {
-                    cases[i].style.display = '';
-                } else {
-                    cases[i].style.display = 'none';
-                }
-            }
-        }
-
-        function applyFilters() {
-            // Implement filter logic here.
-        }
-
-        window.onload = loadCases;
     </script>
 </body>
 </html>
